@@ -1,0 +1,48 @@
+body {
+  font-family: 'Roboto','Noto Sans TC', sans-serif;
+}
+
+img {
+  display: block;
+}
+
+ul {
+  margin-bottom: 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
+  margin-bottom: 0;
+  line-height: 1.5;
+}
+
+h1 {
+  letter-spacing: .25rem;
+}
+
+h2 {
+  font-weight: $font-weight-bold;
+}
+
+p {
+  margin-bottom: 0;
+  letter-spacing: .125rem;
+}
+
+a {
+  display: inline-block;
+}
+
+// admin
+.admin-main, .table {
+  color: $ad-primary;
+}
+
+.admin-main {
+  background-color: $ad-light;
+}
+
+.fw-normal {
+  letter-spacing: .125rem;
+}

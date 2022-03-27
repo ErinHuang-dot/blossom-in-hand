@@ -1,0 +1,11 @@
+.edit-btn {
+  &:hover {
+    color: $secondary;
+  }
+}
+
+.delete-btn {
+  &:hover {
+    color: $ad-warning;
+  }
+}
