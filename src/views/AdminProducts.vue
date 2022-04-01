@@ -201,7 +201,7 @@ export default {
           delComponent.hideModal()
           this.isLoading = false
           this.getProducts(this.currentPage)
-          // this.$httpMessageState(res, '刪除產品') 有錯需debug
+          this.$httpMessageState(res, '刪除產品')
         })
         .catch((error) => {
           this.isLoading = false

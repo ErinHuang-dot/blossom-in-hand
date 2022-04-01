@@ -1,12 +1,13 @@
 body {
-  font-family: 'Roboto','Noto Sans TC', sans-serif;
+  font-family: 'Ubuntu','Noto Sans TC', sans-serif;
+  color: $darker;
 }
 
 img {
   display: block;
 }
 
-ul {
+ol, ul {
   margin-bottom: 0;
   padding-left: 0;
   list-style: none;
@@ -21,17 +22,22 @@ h1 {
   letter-spacing: .25rem;
 }
 
+h2, h3, h4, h5, p {
+  letter-spacing: .125rem;
+}
+
 h2 {
   font-weight: $font-weight-bold;
 }
 
 p {
   margin-bottom: 0;
-  letter-spacing: .125rem;
+  font-size: 1.125rem;
 }
 
 a {
   display: inline-block;
+  letter-spacing: .125rem;
 }
 
 // admin

@@ -28,4 +28,9 @@ export default {
 <style lang="scss">
 @import "./assets/stylesheets/all.scss";
 
+.bg-img {
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
 </style>

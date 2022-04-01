@@ -154,7 +154,7 @@ export default {
           delComponent.hideModal()
           this.isLoading = false
           this.getOrders(this.currentPage)
-          // this.$httpMessageState(res, '刪除訂單')有錯需debug
+          this.$httpMessageState(res, '刪除訂單')
         })
         .catch((error) => {
           this.isLoading = false
