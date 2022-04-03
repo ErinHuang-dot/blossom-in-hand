@@ -153,7 +153,7 @@ export default {
   emits: ['update-product'],
   watch: {
     tempProduct () {
-      this.childProduct = this.tempProduct // 只有watch時沒有顯示資料
+      this.childProduct = this.tempProduct
       if (!this.childProduct.imagesUrl) {
         this.childProduct.imagesUrl = []
       }

@@ -1,8 +1,9 @@
 <template>
   <div class="container">
-    <div class="mt-3">
-      <h3 class="py-5">購物車</h3>
-      <div v-if="cartData.carts" class="row">
+    <v-loading :active="isLoading"></v-loading>
+    <div class="mt-3 mb-7">
+      <h3 class="py-3">購物車</h3>
+      <div v-if="cartData.total" class="row">
         <!-- 購物車列表 -->
         <div class="col-md-8">
           <button
@@ -11,11 +12,11 @@
           <table class="table">
             <thead>
               <tr>
-                <th scope="col" class="border-0 ps-0">購買品項</th>
+                <th scope="col" class="border-0 ps-0" style="width: 80px;">購買品項</th>
                 <th scope="col" class="border-0"></th>
                 <th scope="col" class="border-0">數 量</th>
-                <th scope="col" class="border-0">金 額</th>
-                <th scope="col" class="border-0">移 除</th>
+                <th scope="col" class="border-0 text-end">金 額</th>
+                <th scope="col" class="border-0 text-center">移 除</th>
               </tr>
             </thead>
             <tbody>
@@ -26,36 +27,43 @@
                 <th scope="row" class="border-0 px-0 font-weight-normal py-4">
                   <img
                     :src="item.product.imageUrl"
-                    alt="" style="width: 72px; height: 72px; object-fit: cover;">
+                    :alt="item.product.title"
+                    class="rounded-2"
+                    style="width: 72px; height: 72px; object-fit: cover;">
                 </th>
                 <td class="border-0 align-middle">
-                  <p class="mb-0 fw-bold ms-3 d-inline-block">{{ item.product.title }}</p>
+                  <p class="mb-0 fw-bold ms-2 d-inline-block">{{ item.product.title }}</p>
                 </td>
                 <td class="border-0 align-middle" style="max-width: 160px;">
                   <div class="input-group pe-5">
                     <div class="input-group-prepend">
-                      <button class="btn btn-outline-dark border-0 py-2" type="button" id="button-addon1">
+                      <button
+                        @click="item.qty--"
+                        class="btn btn-outline-dark border-0 py-2" type="button" id="button-addon1">
                         <vue-feather type="minus" class="align-middle"></vue-feather>
                       </button>
                     </div>
                     <input
+                      type="number"
+                      min="1"
                       v-model="item.qty"
                       @change="updateCartItem(item)"
-                      type="text"
-                      class="form-control border-0 text-center my-auto shadow-none"
-                      placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1"
+                      class="hide-arrows form-control border-0 text-center my-auto shadow-none"
+                      aria-describedby="button-addon1"
                       >
                     <div class="input-group-append">
-                      <button class="btn btn-outline-dark border-0 py-2" type="button" id="button-addon2">
+                      <button
+                        @click="item.qty++"
+                        class="btn btn-outline-dark border-0 py-2" type="button" id="button-addon2">
                         <vue-feather type="plus" class="align-middle"></vue-feather>
                       </button>
                     </div>
                   </div>
                 </td>
-                <td class="border-0 align-middle">
-                  <p class="mb-0 ms-auto">{{ item.total }}</p>
+                <td class="border-0 align-middle text-end">
+                  <p class="mb-0 ms-auto">$ {{ item.total }}</p>
                 </td>
-                <td class="border-0 align-middle">
+                <td class="border-0 align-middle text-center">
                   <button
                     type="button" class="btn"
                     @click="removeCartItem(item.id)"
@@ -68,6 +76,7 @@
           <!-- 輸入優惠券 -->
           <div class="input-group w-50 mb-3">
             <input
+              v-model="cartData.couponCode"
               type="text"
               class="form-control rounded-0 border-bottom border-top-0 border-start-0 border-end-0 border-ad-secondary shadow-none"
               placeholder="請輸入優惠券代碼" aria-label="Recipient's username" aria-describedby="button-addon2">
@@ -81,7 +90,7 @@
             </div>
           </div>
         </div>
-        <!-- 訂單金額 -->
+        <!-- 訂單金額表 -->
         <div class="col-md-4">
           <div class="border border-ad-secondary rounded-2 p-4 mb-4">
             <h4 class="fw-bold mb-4">訂單金額</h4>
@@ -89,17 +98,22 @@
               <tbody>
                 <tr>
                   <th scope="row" class="border-0 px-0 pt-4 font-weight-normal">小 計</th>
-                  <td class="text-end border-0 px-0 pt-4">{{ data.total }}</td>
+                  <td class="text-end border-0 px-0 pt-4">$ {{ cartData.total }}</td>
                 </tr>
                 <tr>
-                  <th scope="row" class="border-0 px-0 pt-0 pb-4 font-weight-normal">折 扣</th>
-                  <td class="text-end border-0 px-0 pt-0 pb-4">{{ cartData.total - cartData.final_total }}</td>
+                  <th scope="row" class="border-0 px-0 pt-0 pb-4 font-weight-normal">優惠券代碼</th>
+                  <td
+                    v-if="cartData.couponCode"
+                    class="text-end text-ad-warning border-0 px-0 pt-0 pb-4"
+                  >{{ cartData.couponCode }}</td>
+                  <td v-else class="text-end border-0 px-0 pt-0 pb-4">未使用</td>
                 </tr>
               </tbody>
             </table>
             <div class="d-flex justify-content-between mt-4">
               <p class="mb-0 h4 fw-bold">總 計</p>
-              <p class="mb-0 h4 fw-bold">{{ cartData.final_total }}</p>
+              <p v-if="cartData.couponCode" class="mb-0 h4 fw-bold">$ {{ Math.round(cartData.final_total) }}</p>
+              <p v-else class="mb-0 h4 fw-bold">$ {{ cartData.total }}</p>
             </div>
             <router-link
               to="/checkout"
@@ -133,12 +147,13 @@ export default {
   data () {
     return {
       products: [],
-      cartData: [],
+      cartData: {
+        couponCode: ''
+      },
+      productQty: 1,
+      productId: '',
       isLoadingItem: '', // 用是否正在載入，來改變按鈕的點擊狀態
-      isLoading: false,
-      data: {
-        code: ''
-      }
+      isLoading: false
     }
   },
   methods: {
@@ -156,9 +171,12 @@ export default {
     removeCartItem (id) {
       this.isLoadingItem = id
       const removeApi = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/cart/${id}`
+      this.isLoading = true
       this.$http
         .delete(removeApi)
         .then((res) => {
+          this.isLoading = false
+          alert(res.data.message)
           this.getCartData()
           this.isLoadingItem = ''
         })
@@ -168,11 +186,35 @@ export default {
     },
     deleteCartData (id) {
       this.isLoadingItem = id
+      alert('您確定要移除購物車內所有商品嗎？')
+      this.isLoading = true
       const deletCartApi = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/carts`
       this.$http
         .delete(deletCartApi)
         .then((res) => {
-          alert('您確定要移除購物車內所有商品嗎？')
+          this.isLoading = false
+          alert(res.data.message)
+          console.log(res)
+          this.getCartData()
+          this.isLoadingItem = ''
+        })
+        .catch((error) => {
+          window.alert(error.response.data.message)
+        })
+    },
+    updateCartItem (item) {
+      this.productQty = item.qty
+      const data = {
+        product_id: item.id,
+        qty: this.productQty
+      }
+      this.isLoadingItem = item.id
+      const updateCartApi = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/cart/${item.id}`
+      this.$http
+        .put(updateCartApi, { data })
+        .then((res) => {
+          console.log(res.data)
+          alert(res.data.message)
           this.getCartData()
           this.isLoadingItem = ''
         })
@@ -181,14 +223,20 @@ export default {
         })
     },
     applyCoupon () {
+      const data = {
+        code: this.cartData.couponCode
+      }
+      this.isLoading = true
       const couponApi = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/coupon`
       this.$http
-        .post(couponApi, this.data)
+        .post(couponApi, { data })
         .then((res) => {
-          this.cartData.final_total = res.data.final_total
+          this.isLoading = false
+          alert(res.data.message)
+          this.cartData.final_total = res.data.data.final_total
         })
         .catch((error) => {
-          console.log(error.data.data.message)
+          alert(error.response.data.message)
         })
     }
   },

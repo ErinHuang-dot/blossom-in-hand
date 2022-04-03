@@ -2,7 +2,7 @@
 <!-- banner -->
   <div class="bg-img products-banner"></div>
   <div class="container mb-5">
-    <loading :active="isLoading"></loading>
+    <v-loading :active="isLoading"></v-loading>
     <!-- breadcrumb -->
     <nav aria-label="breadcrumb" class="py-3">
       <ol class="breadcrumb">
@@ -15,12 +15,12 @@
     <!-- main-header -->
     <div class="main-header d-flex justify-cotent-between py-6">
       <h2 class="me-2">挑花買花，我想看看...</h2>
-      <select class="form-select form-select-lg w-25 border-0 border-bottom" aria-label=".form-select-lg example">
+      <!-- <select class="form-select form-select-lg w-25 border-0 border-bottom" aria-label=".form-select-lg example">
         <option selected>請選擇類型</option>
         <option value="1">One</option>
         <option value="2">Two</option>
         <option value="3">Three</option>
-      </select>
+      </select> -->
     </div>
     <!-- 商品列表 -->
     <div class="row row-cols-1 row-cols-md-3 g-7">
@@ -40,7 +40,9 @@
               <router-link :to="`/product/${item.id}`" class="btn btn-outline-primary flex-grow-1">
                 了解更多
               </router-link>
-              <button type="button" class="btn btn-outline-primary">
+              <button
+                @click="addToCart(item.id)"
+                type="button" class="btn btn-outline-primary">
                 <vue-feather type="shopping-cart" class="align-middle"></vue-feather>
               </button>
             </div>
@@ -66,6 +68,7 @@ export default {
   data () {
     return {
       products: [],
+      productId: '',
       isLoading: false,
       pagination: {},
       currentPage: 1
@@ -90,6 +93,23 @@ export default {
           console.dir(error)
           this.isLoading = false
           this.$httpMessageState(error.response, '錯誤訊息')
+        })
+    },
+    addToCart (id, qty = 1) { // 預設商品數量為1
+      const data = {
+        product_id: id,
+        qty
+      }
+      this.isLoadingItem = id // 觸發時也存取id
+      const addToCartApi = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/cart`
+      this.$http
+        .post(addToCartApi, { data }) // 需帶入商品資料
+        .then((res) => {
+          alert(res.data.message)
+          this.isLoadingItem = '' // 觸發後清空id
+        })
+        .catch((error) => {
+          alert(error.response.data.message)
         })
     }
   },

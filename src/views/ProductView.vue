@@ -38,20 +38,24 @@
           <div class="col-6">
             <div class="input-group my-3 bg-lighter rounded align-items-center">
               <div class="input-group-prepend">
-                <button class="btn btn-outline-accent border-0 py-2" type="button" id="button-addon1">
+                <button
+                  @click="prodcutQty--"
+                  class="btn btn-outline-accent border-0 py-2" type="button" id="button-addon1">
                   <vue-feather type="minus" class="align-middle"></vue-feather>
                 </button>
               </div>
               <input
+                v-model="prodcutQty"
                 type="number"
                 class="form-control border-0 text-center my-auto shadow-none bg-lighter"
                 placeholder=""
                 aria-label="Example text with button addon"
                 aria-describedby="button-addon1"
-                value="1"
                 min="1">
               <div class="input-group-append">
-                <button class="btn btn-outline-accent border-0 py-2" type="button" id="button-addon2">
+                <button
+                  @click="prodcutQty++"
+                  class="btn btn-outline-accent border-0 py-2" type="button" id="button-addon2">
                   <vue-feather type="plus" class="align-middle"></vue-feather>
                 </button>
               </div>
@@ -82,7 +86,8 @@
 export default {
   data () {
     return {
-      product: {}
+      product: {},
+      prodcutQty: 1
     }
   },
   methods: {
@@ -91,6 +96,24 @@ export default {
       this.$http(`${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/product/${id}`)
         .then(res => {
           this.product = res.data.product
+        })
+    },
+    addToCart (id) {
+      const data = {
+        product_id: id,
+        qty: this.prodcutQty
+      }
+      this.isLoadingItem = id // 觸發時也存取id
+      const addToCartApi = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/cart`
+      this.$http
+        .post(addToCartApi, { data }) // 需帶入商品資料
+        .then((res) => {
+          alert(res.data.message)
+          this.isLoadingItem = '' // 觸發後清空id
+          console.log(res.data)
+        })
+        .catch((error) => {
+          alert(error.response.data.message)
         })
     }
   },

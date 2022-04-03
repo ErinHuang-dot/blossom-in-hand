@@ -21,61 +21,58 @@
     </div>
     <div class="row justify-content-center">
       <div class="col-md-10">
-        <h3 class="fw-bold mb-4 pt-3">填寫聯絡資訊</h3>
+        <h3 class="fw-bold mb-4 pt-3">填寫資料</h3>
       </div>
     </div>
     <div class="row flex-row-reverse justify-content-center pb-7 mb-6">
       <!-- 訂單內容 -->
       <div class="col-md-4">
         <div class="border border-ad-secondary p-4 mb-4">
-          <div class="d-flex">
+          <div
+            v-for="item in cartData.carts"
+            :key="item.id"
+            class="d-flex mb-2">
             <img
-              src="https://images.unsplash.com/photo-1502743780242-f10d2ce370f3?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1916&q=80"
-              alt=""
-              class="me-2"
+              :src="item.product.imageUrl"
+              :alt="item.product.title"
+              class="rounded-1 me-2"
               style="width: 48px; height: 48px; object-fit: cover">
             <div class="w-100">
               <div class="d-flex justify-content-between">
-                <p class="mb-0 fw-bold">Lorem ipsum</p>
-                <p class="mb-0">NT$12,000</p>
+                <p class="mb-0 fw-bold">{{ item.product.title }}</p>
+                <p class="mb-0">$ {{ item.total }}</p>
               </div>
-              <p class="mb-0 fw-bold">x1</p>
-            </div>
-          </div>
-          <div class="d-flex mt-2">
-            <img src="https://images.unsplash.com/photo-1502743780242-f10d2ce370f3?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1916&q=80" alt="" class="me-2" style="width: 48px; height: 48px; object-fit: cover">
-            <div class="w-100">
-              <div class="d-flex justify-content-between">
-                <p class="mb-0 fw-bold">Lorem ipsum</p>
-                <p class="mb-0">NT$12,000</p>
-              </div>
-              <p class="mb-0 fw-bold">x1</p>
+              <p class="mb-0 fw-bold">x {{ item.qty }}</p>
             </div>
           </div>
           <table class="table mt-4 border-top border-bottom text-muted">
             <tbody>
               <tr>
                 <th scope="row" class="border-0 px-0 pt-4 font-weight-normal">小計</th>
-                <td class="text-end border-0 px-0 pt-4">NT$24,000</td>
+                <td class="text-end border-0 px-0 pt-4">$ {{ cartData.total }}</td>
               </tr>
               <tr>
-                <th scope="row" class="border-0"></th>
-                <td class="text-end border-0 px-0 py-4">
-                  <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="請輸入優惠券代碼" aria-label="Recipient's username" aria-describedby="button-addon2">
-                    <button class="btn btn-outline-light" type="button" id="button-addon2">套用</button>
-                  </div>
-                </td>
+                <th scope="row" class="border-0 px-0 pt-0 pb-4 font-weight-normal">優惠券代碼</th>
+                <td
+                  v-if="cartData.final_total === cartData.total"
+                  class="text-end border-0 px-0 pt-0 pb-4">未使用</td>
+                <td
+                  v-else
+                  class="text-end text-ad-warning border-0 px-0 pt-0 pb-4"
+                >{{ cartData.carts[0].coupon.code }}</td>
               </tr>
             </tbody>
           </table>
           <div class="d-flex justify-content-between mt-4">
             <p class="mb-0 h4 fw-bold">總計</p>
-            <p class="mb-0 h4 fw-bold">NT$24,000</p>
+            <p
+              v-if="cartData.final_total === cartData.total"
+              class="mb-0 h4 fw-bold">$ {{ cartData.total }}</p>
+            <p v-else class="mb-0 h4 fw-bold">$ {{ Math.round(cartData.final_total)}}</p>
           </div>
         </div>
       </div>
-      <!-- 訂購者連絡資訊 -->
+      <!-- 填寫資料 -->
       <div class="col-md-6">
         <vForm
           action="/" method="POST"
@@ -143,7 +140,7 @@
             <error-message name="地址" class="invalid-feedback"></error-message>
           </div>
           <div class="mt-4 mb-3">
-            <label for="message" class="form-label">購買者留言</label>
+            <label for="message" class="form-label">其他留言</label>
             <textarea
               class="form-control" id="message" name="message" rows="5"
               v-model="orderData.message"></textarea>
@@ -156,7 +153,6 @@
               class="btn btn-accent btn-lg px-6"
               type="submit"
               @click="validate"
-              to="/checkout/confirm"
             >建立訂單</button>
           </div>
         </vform>
@@ -169,13 +165,26 @@
 export default {
   data () {
     return {
+      cartData: {},
       orderData: {
         user: {},
-        message: ''
+        message: '',
+        orderId: ''
       }
     }
   },
   methods: {
+    getCartData () {
+      const getCartApi = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/cart`
+      this.$http
+        .get(getCartApi)
+        .then((res) => {
+          this.cartData = res.data.data
+        })
+        .catch((error) => {
+          console.log(error.data.data.message)
+        })
+    },
     isPhone (value) {
       // eslint-disable-next-line
       const phoneNumber = /(^[0-9]{2,4}\-[0-9]{5,8}$)|(^\([0-9]{2,4}\)[0-9]{5,8}$)|^(09)[0-9]{8}$/
@@ -188,12 +197,17 @@ export default {
         .post(orderApi, { data })
         .then((res) => {
           alert(res.data.message)
-          this.$router.push('/checkout/confirm')
+          this.orderData.orderId = res.data.orderId
+          this.$router.push({ path: `/checkout/confirm/${this.orderData.orderId}` }) // 轉址不成功
+          console.log(this.orderData.orderId)
         })
         .catch((error) => {
           console.log(error.response.data.message)
         })
     }
+  },
+  mounted () {
+    this.getCartData()
   }
 }
 </script>

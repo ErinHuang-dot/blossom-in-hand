@@ -2,8 +2,8 @@
   <div class="hero">
     <div class="container">
       <div class="hero-copy w-50 text-center mx-auto">
-        <h1 class="fs-2">讓花點綴你的放鬆瞬間</h1>
-        <p class="fs-3">當你想放鬆一下是，就是值的犒賞自己的時刻</p>
+        <h1 class="fs-2">讓花點綴你的放鬆時刻</h1>
+        <p class="fs-3"></p>
       </div>
     </div>
   </div>

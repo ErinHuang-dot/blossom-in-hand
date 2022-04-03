@@ -4,7 +4,19 @@
   background-position: center center;
 }
 
-// sample-custom css
+/* Form
+/* Chrome, Safari, Edge, Opera */
+.hide-arrows::-webkit-outer-spin-button,
+.hide-arrows::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+/* Firefox */
+.hide-arrows {
+  -moz-appearance: textfield;
+}
+
+/* Custom css for layout sample  */
 .custom-checkout-label {
   padding-left: 28px;
   cursor: pointer;

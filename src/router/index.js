@@ -26,14 +26,14 @@ const routes = [
         component: () => import('../views/CheckoutForm.vue')
       },
       {
-        path: 'checkout/confirm',
+        path: 'checkout/confirm/:id',
         component: () => import('../views/CheckoutConfirm.vue')
-      },
-      {
-        path: 'checkout/success',
-        component: () => import('../views/CheckoutSuccess.vue')
       }
     ]
+  },
+  {
+    path: '/checkout/success',
+    component: () => import('../views/CheckoutSuccess.vue')
   },
   {
     path: '/login',
