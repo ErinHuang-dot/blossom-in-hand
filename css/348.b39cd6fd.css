@@ -1,0 +1,1 @@
+.bg-img-half{height:100vh;width:50vw;background-image:url(https://images.unsplash.com/photo-1607087007621-ef43a693ed80?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80)}.bg-text-bottom,.bg-text-top{width:75%}.bg-text-bottom{margin-top:30vh}@media(max-width:480px){.bg-img-half{width:100vw}.bg-text-bottom{margin-top:15vh;width:100%}}

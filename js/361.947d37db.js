@@ -1,0 +1,2 @@
+"use strict";(self["webpackChunkp_blossom"]=self["webpackChunkp_blossom"]||[]).push([[361],{4361:function(s,c,e){e.r(c),e.d(c,{default:function(){return f}});var n=e(6252);const r={class:"hero"},t=(0,n._)("div",{class:"container"},[(0,n._)("div",{class:"hero-copy w-50 text-center mx-auto"},[(0,n._)("h1",{class:"fs-2"},"讓花點綴你的放鬆時刻"),(0,n._)("p",{class:"fs-3"})])],-1),o=[t];function a(s,c){return(0,n.wg)(),(0,n.iD)("div",r,o)}var u=e(3744);const l={},i=(0,u.Z)(l,[["render",a]]);var f=i}}]);
+//# sourceMappingURL=361.947d37db.js.map
